@@ -1,0 +1,96 @@
+ur3@ur3:~/catkin_cctan2$ roslaunch ur3_driver ur3_driver.launch
+... logging to /home/ur3/.ros/log/2f7dbdd0-9a5b-11f0-b70c-2337c1f49afc/roslaunch-ur3-8481.log
+Checking log directory for disk usage. This may take a while.
+Press Ctrl-C to interrupt
+Done checking log file disk usage. Usage is <1GB.
+
+started roslaunch server http://ur3:40991/
+
+SUMMARY
+========
+
+PARAMETERS
+ * /rosdistro: noetic
+ * /rosversion: 1.15.14
+ * /ur3_driver_1/robot_ip: 192.168.10.53
+
+NODES
+  /
+    ur3_driver_1 (ur3_driver/ur3_driver)
+
+auto-starting new master
+process[master]: started with pid [8492]
+ROS_MASTER_URI=http://localhost:11311
+
+setting /run_id to 2f7dbdd0-9a5b-11f0-b70c-2337c1f49afc
+process[rosout-1]: started with pid [8505]
+started core service [/rosout]
+process[ur3_driver_1-2]: started with pid [8508]
+[ INFO] [1758837688.474633819]: Creating UrRealtimeCommunication
+[ INFO] [1758837688.476283807]: Finished Creating UrRealtimeCommunication
+RT Local PC addr 192.168.10.41
+[ INFO] [1758837690.478062313]: Realtime port: Got connection
+[ INFO] [1758837692.417985143]: Secondary port: Got connection
+set_digital_out(0,False)
+movej([2.094395,-1.570796,1.570796,-1.570796,-1.570796,0.000000],a=4.000000,v=4.000000)
+[ INFO] [1758837696.158283560]: Sending Goal..
+set_digital_out(0,False)
+movej([2.451489,-0.973021,1.668186,-2.232800,-1.581792,0.355175],a=4.000000,v=4.000000)
+[ INFO] [1758837697.658513565]: Sending Goal..
+set_digital_out(0,True)
+movej([2.451464,-0.972948,1.668121,-2.232779,-1.581884,0.355223],a=1.000000,v=1.000000)
+[ INFO] [1758837698.908390781]: Sending Goal..
+set_digital_out(0,True)
+movej([2.451489,-1.473021,1.668186,-2.232800,-1.581792,0.355175],a=4.000000,v=4.000000)
+[ INFO] [1758837699.959590298]: Sending Goal..
+set_digital_out(0,True)
+movej([2.696534,-0.857306,1.882512,-2.561969,-1.573065,0.598997],a=4.000000,v=4.000000)
+[ INFO] [1758837701.159779457]: Sending Goal..
+set_digital_out(0,False)
+movej([2.696755,-0.857295,1.882430,-2.562028,-1.572976,0.599065],a=1.000000,v=1.000000)
+[ INFO] [1758837702.409824253]: Sending Goal..
+set_digital_out(0,False)
+movej([2.696534,-1.357306,1.882512,-2.561969,-1.573065,0.598997],a=4.000000,v=4.000000)
+[ INFO] [1758837703.460906864]: Sending Goal..
+set_digital_out(0,False)
+movej([2.696443,-1.357278,1.882658,-2.562004,-1.573072,0.598981],a=1.000000,v=1.000000)
+[ INFO] [1758837704.661079892]: Sending Goal..
+set_digital_out(0,False)
+movej([2.094395,-1.570796,1.570796,-1.570796,-1.570796,0.000000],a=4.000000,v=4.000000)
+[ INFO] [1758837704.741335373]: Sending Goal..
+set_digital_out(0,False)
+movej([2.451489,-0.879820,1.699078,-2.357242,-1.581443,0.354476],a=4.000000,v=4.000000)
+[ INFO] [1758837706.161137950]: Sending Goal..
+set_digital_out(0,True)
+movej([2.451560,-0.879763,1.699060,-2.357226,-1.581632,0.354564],a=1.000000,v=1.000000)
+[ INFO] [1758837707.511116048]: Sending Goal..
+set_digital_out(0,True)
+movej([2.451489,-1.379820,1.699078,-2.357242,-1.581443,0.354476],a=4.000000,v=4.000000)
+[ INFO] [1758837708.562196366]: Sending Goal..
+set_digital_out(0,True)
+movej([2.696534,-0.953648,1.873960,-2.614154,-1.573414,0.599346],a=4.000000,v=4.000000)
+[ INFO] [1758837709.762422567]: Sending Goal..
+set_digital_out(0,False)
+movej([2.696491,-0.953797,1.873899,-2.614154,-1.573562,0.599316],a=1.000000,v=1.000000)
+[ INFO] [1758837710.962479809]: Sending Goal..
+set_digital_out(0,False)
+movej([2.696534,-1.453648,1.873960,-2.614154,-1.573414,0.599346],a=4.000000,v=4.000000)
+[ INFO] [1758837712.012885062]: Sending Goal..
+set_digital_out(0,False)
+movej([2.696443,-1.453737,1.874090,-2.614106,-1.573443,0.599256],a=1.000000,v=1.000000)
+[ INFO] [1758837713.213044858]: Sending Goal..
+set_digital_out(0,False)
+movej([2.094395,-1.570796,1.570796,-1.570796,-1.570796,0.000000],a=4.000000,v=4.000000)
+[ INFO] [1758837713.293286954]: Sending Goal..
+set_digital_out(0,False)
+movej([2.977532,-1.068665,1.839577,-2.309071,-1.563990,0.880868],a=4.000000,v=4.000000)
+[ INFO] [1758837714.762868411]: Sending Goal..
+set_digital_out(0,True)
+movej([2.977273,-1.068757,1.839568,-2.309017,-1.564116,0.880904],a=1.000000,v=1.000000)
+[ INFO] [1758837716.263124937]: Sending Goal..
+^C[ur3_driver_1-2] killing on exit
+[rosout-1] killing on exit
+[master] killing on exit
+shutting down processing monitor...
+... shutting down processing monitor complete
+done
