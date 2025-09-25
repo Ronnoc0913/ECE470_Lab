@@ -18,6 +18,8 @@ import sys
 from math import pi
 from lab2_header import *
 
+
+
 # 20Hz
 SPIN_RATE = 20
 
@@ -211,10 +213,10 @@ def move_block(pub_cmd, loop_rate, start_loc, start_height, \
     error = 0
 
     safety_src = copy.deepcopy(src)
-    safety_src[1] -= 0.1
+    safety_src[1] -= 0.5
 
     safety_des = copy.deepcopy(des)
-    safety_des[1] -= 0.1
+    safety_des[1] -= 0.5
 
     error = move_arm(pub_cmd, loop_rate, src, 4.0, 4.0)    
     if error != 0:
@@ -305,44 +307,6 @@ def main():
     #     else:
     #         print("Please just enter the character 1 2 3 or 0 to quit \n\n")
 
-    stacks = [[3,2,1], [], []]
-
-    def ask_for_tower():
-        while True:
-            try:
-                start_location = int(input("Enter tower starting location: (0,1,2) or 3 to quit:").strip())
-                end_location = int(input("Enter tower end location: (0,1,2) or 3 to quit:").strip())
-
-                if start_location == 3:
-                    print("quitting...")
-                    sys.exit()
-
-                if start_location == end_location:
-                    print("quitting...")
-                    sys.exit()
-
-                if not(0 <= start_location <= 2 and 0 <= end_location <= 2):
-                    raise ValueError
-
-                if not stacks[start_location]:
-                    print("No blocks at tower")
-                    continue
-
-                moving_disk = stacks[start_location][-1]
-
-                if stacks[end_location] and stacks[end_location][-1] < moving_disk:
-                    print("move not possible")
-                    continue
-                
-                return start_location, end_location               
-
-
-            except(ValueError, AssertionError):
-                print("Invalid Input")
-
-
-
-
 
     ############### Your Code End Here ###############
 
@@ -357,25 +321,88 @@ def main():
     ############## Your Code Start Here ##############
     # TODO: modify the code so that UR3 can move tower accordingly from user input
 
-    while True:
-        start_location, end_location = ask_for_tower()
+   
 
-        start_height = len(stacks[start_location]) - 1
-        end_height = len(stacks[end_location])
 
+    def get_moves(n, source, dest, aux):
+        if n==1:
+            return [(source, dest)]
+        
+        else:
+            moves = []
+            moves.extend(get_moves(n-1, source, dest, aux))
+            moves.append([source, dest])
+            moves.extend(get_moves(n-1, aux, dest, source))
+            return moves
+        
+        
+    def execute_moves(source, dest, stacks):
+        start_height = len(stacks[move_source]) - 1
+        end_height = len(stacks[move_dest])
+
+        if start_height < 0:
+            rospy.logerr(f"No blockis on tower: {source}")
+            return 1
+        
+        moving_block = stacks[source][start_height]
+
+        if stacks[dest] and stacks[dest][-1] < moving_block:
+            rospy.logerr(f"Illegal move")
+            return 2
+        
         move_arm(pub_command, loop_rate, home, 4.0, 4.0)
 
-        return_code = move_block(pub_command, loop_rate, start_loc=start_location, start_height=start_height, end_loc=end_location, end_height=end_height)
+        return_code = move_block(pub_command, loop_rate, start_loc=move_source, start_height=start_height, end_loc=move_dest, end_height=end_height)
 
         if return_code != 0:
-            rospy.logerr(f"failed to move block, code: {return_code}")
-            break
-
-        stacks[end_location].append(stacks[start_location].pop())
-
-        rospy.loginfo("moved block")
+            return return_code
+        
+        stacks[dest].append(stacks[source].pop())
 
         gripper(pub_command, loop_rate, suction_off)
+
+        return 0
+
+
+    stacks = [[3,2,1], [], []]
+
+    while True:
+        try:
+            start_location = int(input("Enter tower starting location: (0,1,2) or 3 to quit:").strip())
+            if start_location == 3:
+                sys.exit()
+
+            end_location = int(input("Enter tower end location: (0,1,2) or 3 to quit:").strip())
+            
+            if not(0 <= start_location <= 2 and 0 <= end_location <= 2) or end_location == start_location:
+                print("Invalid Input")
+                continue
+            
+            if not stacks[start_location]:
+                print("no blocks on that tower")
+
+            break
+
+        except ValueError:
+            print("Invalid Input")
+
+
+    num_blocks = len(stacks[start_location])
+
+    auxiliary = 3 - start_location - end_location
+    moves = get_moves(num_blocks, start_location, end_location, auxiliary)
+
+    for i, (move_source, move_dest) in enumerate(moves):
+
+        error = execute_moves(move_source, move_dest, stacks)
+
+        if error != 0:
+            rospy.logerr(f"Failed to execute move{i+1}, error code: {error}")
+            break
+
+        
+
+
 
     ############### Your Code End Here ###############
 
