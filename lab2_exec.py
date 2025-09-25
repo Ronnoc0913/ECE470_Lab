@@ -265,29 +265,62 @@ def main():
     ############## Your Code Start Here ##############
     # TODO: modify the code below so that program can get user input
 
-    input_done = 0
-    loop_count = 0
+    # input_done = 0
+    # loop_count = 0
 
-    while(not input_done):
-        input_string = input("Enter number of loops <Either 1 2 3 or 0 to quit> ")
-        print("You entered " + input_string + "\n")
+    # while(not input_done):
+    #     input_string = input("Enter number of loops <Either 1 2 3 or 0 to quit> ")
+    #     print("You entered " + input_string + "\n")
 
-        if(int(input_string) == 1):
-            input_done = 1
-            loop_count = 1
-        elif (int(input_string) == 2):
-            input_done = 1
-            loop_count = 2
-        elif (int(input_string) == 3):
-            input_done = 1
-            loop_count = 3
-        elif (int(input_string) == 0):
-            print("Quitting... ")
-            sys.exit()
-        else:
-            print("Please just enter the character 1 2 3 or 0 to quit \n\n")
+    #     if(int(input_string) == 1):
+    #         input_done = 1
+    #         loop_count = 1
+    #     elif (int(input_string) == 2):
+    #         input_done = 1
+    #         loop_count = 2
+    #     elif (int(input_string) == 3):
+    #         input_done = 1
+    #         loop_count = 3
+    #     elif (int(input_string) == 0):
+    #         print("Quitting... ")
+    #         sys.exit()
+    #     else:
+    #         print("Please just enter the character 1 2 3 or 0 to quit \n\n")
 
-    
+    stacks = [[3,2,1], [], []]
+
+    def ask_for_tower():
+        while True:
+            try:
+                start_location = int(input("Enter tower starting location: (0,1,2) or 3 to quit:").strip())
+                end_location = int(input("Enter tower end location: (0,1,2) or 3 to quit:").strip())
+
+                if start_location == 3:
+                    print("quitting...")
+                    sys.exit()
+
+                if start_location == end_location:
+                    print("quitting...")
+                    sys.exit()
+
+                if not(0 <= start_location <= 2 and 0 <= end_location <= 2):
+                    raise ValueError
+
+                if not stacks[start_location]:
+                    print("No blocks at tower")
+                    continue
+
+                moving_disk = stacks[start_location][-1]
+
+                if stacks[end_location] and stacks[end_location][-1] < moving_disk:
+                    print("move not possible")
+                    continue
+                
+                return start_location, end_location               
+
+
+            except(ValueError, AssertionError):
+                print("Invalid Input")
 
 
 
@@ -306,28 +339,25 @@ def main():
     ############## Your Code Start Here ##############
     # TODO: modify the code so that UR3 can move tower accordingly from user input
 
-    while(loop_count > 0):
+    while True:
+        start_location, end_location = ask_for_tower()
+
+        start_height = len(stacks[start_location]) - 1
+        end_height = len(stacks[end_location])
 
         move_arm(pub_command, loop_rate, home, 4.0, 4.0)
 
-        rospy.loginfo("Sending goal 1 ...")
-        move_arm(pub_command, loop_rate, Q[0][0], 4.0, 4.0)
+        return_code = move_block(pub_command, loop_rate, start_loc=start_location, start_height=start_height, end_loc=end_location, end_height=end_height)
 
-        gripper(pub_command, loop_rate, suction_on)
-        # Delay to make sure suction cup has grasped the block
-        time.sleep(1.0)
+        if return_code != 0:
+            rospy.logerr(f"failed to move block, code: {return_code}")
+            break
 
-        rospy.loginfo("Sending goal 2 ...")
-        move_arm(pub_command, loop_rate, Q[1][1], 4.0, 4.0)
+        stacks[end_location].append(stacks[start_location].pop())
 
-        rospy.loginfo("Sending goal 3 ...")
-        move_arm(pub_command, loop_rate, Q[2][0], 4.0, 4.0)
+        rospy.loginfo("moved block")
 
-        loop_count = loop_count - 1
-
-    gripper(pub_command, loop_rate, suction_off)
-
-
+        gripper(pub_command, loop_rate, suction_off)
 
     ############### Your Code End Here ###############
 
