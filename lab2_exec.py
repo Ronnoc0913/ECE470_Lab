@@ -206,8 +206,16 @@ def move_block(pub_cmd, loop_rate, start_loc, start_height, \
         des = Q[end_loc][end_height]    
     except IndexError:
         rospy.logerr('Incorrect indices')
+        return 1
     
     error = 0
+
+    safety_src = copy.deepcopy(src)
+    safety_src[1] -= 0.1
+
+    safety_des = copy.deepcopy(des)
+    safety_des[1] -= 0.1
+
     error = move_arm(pub_cmd, loop_rate, src, 4.0, 4.0)    
     if error != 0:
         rospy.logerr('Failed to reach source position')
@@ -218,6 +226,11 @@ def move_block(pub_cmd, loop_rate, start_loc, start_height, \
 
     if digital_in_0 != 1:
         rospy.logerr('Failed to grip block')
+        return 2
+
+    error = move_arm(pub_cmd, loop_rate, safety_src, 4.0, 4.0)    
+    if error != 0:
+        rospy.logerr('Failed to reach source position')
         return error
 
     error = move_arm(pub_cmd, loop_rate, des, 4.0, 4.0)
@@ -230,6 +243,11 @@ def move_block(pub_cmd, loop_rate, start_loc, start_height, \
 
     if digital_in_0 != 0:
         rospy.logerr('Failed to drop block')
+        return 3
+
+    error = move_arm(pub_cmd, loop_rate, safety_des, 4.0, 4.0)
+    if error != 0:
+        rospy.logerr('Failed to reach destination position')
         return error
 
     return error
