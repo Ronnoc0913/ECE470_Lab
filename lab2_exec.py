@@ -348,7 +348,7 @@ def main():
     ############## Your Code Start Here ##############
     # TODO: modify the code so that UR3 can move tower accordingly from user input
 
-   
+    error = 0
     def get_moves(n, source, dest, aux):
         if n==1:
             return [(source, dest)]
@@ -361,7 +361,7 @@ def main():
             return moves
         
         
-    def execute_moves(source, dest, stacks):
+    def execute_moves(move_source, move_dest, stacks):
         if not stacks[move_source]:
             rospy.logerr(f"No block on tower: {move_source}")
             return 1
@@ -375,7 +375,7 @@ def main():
             rospy.logerr(f"Illegal move: Cannot place block {moving_block} on block {stacks[move_dest][-1]}")
             return 2
         
-        move_arm(pub_command, loop_rate, home, 4.0, 4.0)
+        #move_arm(pub_command, loop_rate, home, 4.0, 4.0)
         return_code = move_block(pub_command, loop_rate, start_loc=move_source, start_height=start_height, end_loc=move_dest, end_height=end_height)
 
         if return_code != 0:
