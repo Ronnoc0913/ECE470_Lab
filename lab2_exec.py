@@ -464,7 +464,7 @@ def main():
             rospy.loginfo(f"Move {i+1} completed")
     
     if error == 0:
-        rospy.loginfo("Tower of Hanoi solved successfully")
+        rospy.loginfo(f"Tower of Hanoi solved successfully from tower {start_location} to tower {end_location}")
         
 
         
