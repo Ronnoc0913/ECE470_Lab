@@ -27,19 +27,19 @@ SPIN_RATE = 20
 home = np.radians([120, -90, 90, -90, -90, 0])
 
 # Hanoi tower location 1
-Q11 = [140.46*pi/180.0, -44.96*pi/180.0, 97.92*pi/180.0, -141.07*pi/180.0, -90.61*pi/180.0, 20.32*pi/180.0] # base block
-Q12 = [140.46*pi/180.0, -50.41*pi/180.0, 97.35*pi/180.0, -135.06*pi/180.0, -90.61*pi/180.0, 20.31*pi/180.0] # second block
-Q13 = [140.46*pi/180.0, -55.75*pi/180.0, 95.58*pi/180.0, -127.93*pi/180.0, -90.63*pi/180.0, 20.35*pi/180.0] # top block 
+Q11 = [139,12*pi/180.0, -44.71*pi/180.0, 96.22*pi/180.0, -139.60*pi/180.0, -90.68*pi/180.0, 18.99*pi/180.0] # base block
+Q12 = [139.21*pi/180.0, -50.07*pi/180.0, 95.71*pi/180.0, -133.71*pi/180.0, -90.68*pi/180.0, 19.11*pi/180.0] # top block 
+Q13 = [139.21*pi/180.0, -55.35*pi/180.0, 93.81*pi/180.0, -126.54*pi/180.0, -90.70*pi/180.0, 19.13*pi/180.0] # top block 
 
 # Hanoi tower location 2
-Q21 = [154.5*pi/180.0, -49.12*pi/180.0, 107.86*pi/180.0, -146.79*pi/180.0, -90.13*pi/180.0, 34.32*pi/180.0] # base block
-Q22 = [154.5*pi/180.0, -54.64*pi/180.0, 107.37*pi/180.0, -149.78*pi/180.0, -90.15*pi/180.0, 34.34*pi/180.0] # second block
-Q23 = [154.5*pi/180.0, -60.95*pi/180.0, 105.54*pi/180.0, -132.65*pi/180.0, -90.16*pi/180.0, 34.36*pi/180.0] # top block 
+Q21 = [152.93*pi/180.0, -48.72*pi/180.0, 107.31*pi/180.0, -146.61*pi/180.0, -90.20*pi/180.0, 32.77*pi/180.0] # base block
+Q22 = [152.94*pi/180.0, -55.44*pi/180.0, 106.63*pi/180.0, -139.21*pi/180.0, -90.22*pi/180.0, 32.80*pi/180.0] # second block
+Q23 = [152.93*pi/180.0, -61.15*pi/180.0, 104.79*pi/180.0, -131.66*pi/180.0, -90.22*pi/180.0, 32.82*pi/180.0] # top block 
 
 # Hanoi tower location 3
-Q31 = [170.6*pi/180.0, -62.32*pi/180.0, 104.88*pi/180.0, -130.71*pi/180.0, -89.60*pi/180.0, 50.47*pi/180.0] # base block
-Q32 = [170.6*pi/180.0, -54.67*pi/180.0, 107.34*pi/180.0, -140.81*pi/180.0, -89.59*pi/180.0, 50.44*pi/180.0] # second block
-Q33 = [170.6*pi/180.0, -61.23*pi/180.0, 105.40*pi/180.0, -132.30*pi/180.0, -89.61*pi/180.0, 50.47*pi/180.0] # top block 
+Q31 = [168.91*pi/180.0, -48.37*pi/180.0, 106.80*pi/180.0, -146.53*pi/180.0, -89.65*pi/180.0, 48.47*pi/180.0] # base block
+Q32 = [168.90*pi/180.0, -55.55*pi/180.0, 106.04*pi/180.0, -138.58*pi/180.0, -89.65*pi/180.0, 48.75*pi/180.0] # second block
+Q33 = [168.90*pi/180.0, -61.23*pi/180.0, 104.11*pi/180.0, -130.97*pi/180.0, -89.66*pi/180.0, 48.77*pi/180.0] # top block 
 
 thetas = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
@@ -213,10 +213,10 @@ def move_block(pub_cmd, loop_rate, start_loc, start_height, \
     error = 0
 
     safety_src = copy.deepcopy(src)
-    safety_src[1] -= 0.5
+    safety_src[1] -= 0.75
 
     safety_des = copy.deepcopy(des)
-    safety_des[1] -= 0.5
+    safety_des[1] -= 0.75
 
     error = move_arm(pub_cmd, loop_rate, src, 4.0, 4.0)    
     if error != 0:
@@ -230,12 +230,12 @@ def move_block(pub_cmd, loop_rate, start_loc, start_height, \
         rospy.logerr('Failed to grip block')
         return 2
 
-    error = move_arm(pub_cmd, loop_rate, safety_src, 4.0, 4.0)    
+    error = move_arm(pub_cmd, loop_rate, safety_src, 2.0, 2.0)    
     if error != 0:
         rospy.logerr('Failed to reach source position')
         return error
 
-    error = move_arm(pub_cmd, loop_rate, des, 4.0, 4.0)
+    error = move_arm(pub_cmd, loop_rate, des, 2.0, 2.0)
     if error != 0:
         rospy.logerr('Failed to reach destination position')
         return error
@@ -322,49 +322,74 @@ def main():
     # TODO: modify the code so that UR3 can move tower accordingly from user input
 
    
-
-
     def get_moves(n, source, dest, aux):
         if n==1:
             return [(source, dest)]
         
         else:
             moves = []
-            moves.extend(get_moves(n-1, source, dest, aux))
+            moves.extend(get_moves(n-1, source, aux, dest))
             moves.append([source, dest])
             moves.extend(get_moves(n-1, aux, dest, source))
             return moves
         
         
     def execute_moves(source, dest, stacks):
+        if not stacks[move_source]:
+            rospy.logerr(f"No block on tower: {move_source}")
+            return 1
+        
+        moving_block = stacks[move_source][-1]
         start_height = len(stacks[move_source]) - 1
         end_height = len(stacks[move_dest])
 
-        if start_height < 0:
-            rospy.logerr(f"No blockis on tower: {source}")
-            return 1
-        
-        moving_block = stacks[source][start_height]
-
-        if stacks[dest] and stacks[dest][-1] < moving_block:
-            rospy.logerr(f"Illegal move")
+        #Check if the move is legal (if destination is empty or if the top block is larger)
+        if stacks[move_dest] and stacks[move_dest][-1] < moving_block:
+            rospy.logerr(f"Illegal move: Cannot place block {moving_block} on block {stacks[move_dest][-1]}")
             return 2
         
         move_arm(pub_command, loop_rate, home, 4.0, 4.0)
-
         return_code = move_block(pub_command, loop_rate, start_loc=move_source, start_height=start_height, end_loc=move_dest, end_height=end_height)
 
         if return_code != 0:
             return return_code
         
-        stacks[dest].append(stacks[source].pop())
+        #update the stack
+        moved_block = stacks[move_source].pop()
+        stacks[move_dest].append(moved_block)
 
-        gripper(pub_command, loop_rate, suction_off)
+        rospy.loginfo(f"Moved block {moved_block} from tower {move_source} to tower {move_dest}")
 
         return 0
 
+        # start_height = len(stacks[move_source]) - 1
+        # end_height = len(stacks[move_dest])
 
-    stacks = [[3,2,1], [], []]
+        # if start_height < 0:
+        #     rospy.logerr(f"No blockis on tower: {source}")
+        #     return 1
+        
+        # moving_block = stacks[source][start_height]
+
+        # if stacks[dest] and stacks[dest][-1] < moving_block:
+        #     rospy.logerr(f"Illegal move")
+        #     return 2
+        
+        # move_arm(pub_command, loop_rate, home, 4.0, 4.0)
+
+        # return_code = move_block(pub_command, loop_rate, start_loc=move_source, start_height=start_height, end_loc=move_dest, end_height=end_height)
+
+        # if return_code != 0:
+        #     return return_code
+        
+        # stacks[dest].append(stacks[source].pop())
+
+        # gripper(pub_command, loop_rate, suction_off)
+
+        # return 0
+
+    #initialize the stacks
+    stacks = [[3,2,1], [], []] #3 stands for top and 1 for bottom block
 
     while True:
         try:
@@ -373,13 +398,18 @@ def main():
                 sys.exit()
 
             end_location = int(input("Enter tower end location: (0,1,2) or 3 to quit:").strip())
+            if end_location == 3:
+                sys.exit()
             
             if not(0 <= start_location <= 2 and 0 <= end_location <= 2) or end_location == start_location:
                 print("Invalid Input")
                 continue
             
+            if start_location == end_location:
+                print("Start and End location cannot be the same")
+
             if not stacks[start_location]:
-                print("no blocks on that tower")
+                print("no blocks on that starting tower")
 
             break
 
@@ -390,15 +420,24 @@ def main():
     num_blocks = len(stacks[start_location])
 
     auxiliary = 3 - start_location - end_location
+
+    rospy.loginfo(f"Solving for Tower of Hanoi: {num_blocks} blocks from tower {start_location} to tower {end_location}")
+
     moves = get_moves(num_blocks, start_location, end_location, auxiliary)
 
     for i, (move_source, move_dest) in enumerate(moves):
-
+        rospy.loginfo(f"Executing move {i+1}: from tower {move_source} to tower {move_dest}")
         error = execute_moves(move_source, move_dest, stacks)
 
         if error != 0:
             rospy.logerr(f"Failed to execute move{i+1}, error code: {error}")
             break
+        else:
+            rospy.loginfo(f"Move {i+1} completed")
+    
+    if error == 0:
+        rospy.loginfo("Tower of Hanoi solved successfully")
+        
 
         
 
