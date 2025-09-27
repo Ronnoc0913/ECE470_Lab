@@ -27,7 +27,7 @@ SPIN_RATE = 20
 home = np.radians([120, -90, 90, -90, -90, 0])
 
 # Hanoi tower location 1
-Q11 = [139,12*pi/180.0, -44.71*pi/180.0, 96.22*pi/180.0, -139.60*pi/180.0, -90.68*pi/180.0, 18.99*pi/180.0] # base block
+Q11 = [139.12*pi/180.0, -44.71*pi/180.0, 96.22*pi/180.0, -139.60*pi/180.0, -90.68*pi/180.0, 18.99*pi/180.0] # base block
 Q12 = [139.21*pi/180.0, -50.07*pi/180.0, 95.71*pi/180.0, -133.71*pi/180.0, -90.68*pi/180.0, 19.11*pi/180.0] # top block 
 Q13 = [139.21*pi/180.0, -55.35*pi/180.0, 93.81*pi/180.0, -126.54*pi/180.0, -90.70*pi/180.0, 19.13*pi/180.0] # top block 
 
@@ -211,7 +211,7 @@ def move_block(pub_cmd, loop_rate, start_loc, start_height, \
         return 1
     
     error = 0
-    safety_lift = 0.3   #radians for vertical lift
+    safety_lift = 0.2   #radians for vertical lift
 
     safety_src = copy.deepcopy(src)
     safety_src[1] -= safety_lift
@@ -224,12 +224,12 @@ def move_block(pub_cmd, loop_rate, start_loc, start_height, \
         rospy.logerr('Failed to reach home position')
         return error
     
-    error = move_arm(pub_cmd, loop_rate, safety_src, 4.0, 4.0)    
+    error = move_arm(pub_cmd, loop_rate, safety_src, 2.0, 2.0)    
     if error != 0:
         rospy.logerr('Failed to reach safety source position')
         return error
     
-    error = move_arm(pub_cmd, loop_rate, src, 1.0, 1.0)    
+    error = move_arm(pub_cmd, loop_rate, src, 0.5, 0.5)    
     if error != 0:
         rospy.logerr('Failed to reach source position')
         return error
@@ -247,7 +247,7 @@ def move_block(pub_cmd, loop_rate, start_loc, start_height, \
         rospy.logerr('Failed to lift from source position')
         return error
 
-    error = move_arm(pub_cmd, loop_rate, home, 2.0, 2.0)
+    error = move_arm(pub_cmd, loop_rate, home, 4.0, 4.0)
     if error != 0:
         rospy.logerr('Failed to reach home position')
         return error
@@ -257,7 +257,7 @@ def move_block(pub_cmd, loop_rate, start_loc, start_height, \
         rospy.logerr('Failed to reach safety destination position')
         return error
     
-    error = move_arm(pub_cmd, loop_rate, des, 1.0, 1.0)
+    error = move_arm(pub_cmd, loop_rate, des, 0.5, 0.5)
     if error != 0:
         rospy.logerr('Failed to reach destination position')
         return error
@@ -274,7 +274,7 @@ def move_block(pub_cmd, loop_rate, start_loc, start_height, \
         rospy.logerr('Failed to lift from destination position')
         return error
     
-    error = move_arm(pub_cmd, loop_rate, home, 2.0, 2.0)
+    error = move_arm(pub_cmd, loop_rate, home, 4.0, 4.0)
     if error != 0:
         rospy.logerr('Failed to reach home position')
         return error
