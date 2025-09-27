@@ -37,9 +37,9 @@ Q22 = [152.94*pi/180.0, -55.44*pi/180.0, 106.63*pi/180.0, -139.21*pi/180.0, -90.
 Q23 = [152.93*pi/180.0, -61.15*pi/180.0, 104.79*pi/180.0, -131.66*pi/180.0, -90.22*pi/180.0, 32.82*pi/180.0] # top block 
 
 # Hanoi tower location 3
-Q31 = [168.91*pi/180.0, -48.37*pi/180.0, 106.80*pi/180.0, -146.53*pi/180.0, -89.65*pi/180.0, 48.47*pi/180.0] # base block
-Q32 = [168.90*pi/180.0, -55.55*pi/180.0, 106.04*pi/180.0, -138.58*pi/180.0, -89.65*pi/180.0, 48.75*pi/180.0] # second block
-Q33 = [168.90*pi/180.0, -61.23*pi/180.0, 104.11*pi/180.0, -130.97*pi/180.0, -89.66*pi/180.0, 48.77*pi/180.0] # top block 
+Q31 = [168.91*pi/180.0, -49.53*pi/180.0, 108.31*pi/180.0, -149.11*pi/180.0, -90.02*pi/180.0, 48.70*pi/180.0] # base block
+Q32 = [168.90*pi/180.0, -55.92*pi/180.0, 107.63*pi/180.0, -141.84*pi/180.0, -90.04*pi/180.0, 48.72*pi/180.0] # second block
+Q33 = [168.90*pi/180.0, -61.64*pi/180.0, 105.81*pi/180.0, -134.30*pi/180.0, -90.05*pi/180.0, 48.74*pi/180.0] # top block 
 
 thetas = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
@@ -356,7 +356,7 @@ def main():
         else:
             moves = []
             moves.extend(get_moves(n-1, source, aux, dest))
-            moves.append([source, dest])
+            moves.append((source, dest))
             moves.extend(get_moves(n-1, aux, dest, source))
             return moves
         
@@ -416,7 +416,7 @@ def main():
         # return 0
 
     #initialize the stacks
-    stacks = [[3,2,1], [], []] #3 stands for top and 1 for bottom block
+    stacks = [[], [], []]
 
     while True:
         try:
@@ -444,8 +444,9 @@ def main():
             print("Invalid Input")
 
 
-    num_blocks = len(stacks[start_location])
+    stacks[start_location] = [3, 2, 1] #3 stands for top and 1 for bottom block
 
+    num_blocks = len(stacks[start_location])    
     auxiliary = 3 - start_location - end_location
 
     rospy.loginfo(f"Solving for Tower of Hanoi: {num_blocks} blocks from tower {start_location} to tower {end_location}")
