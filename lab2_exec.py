@@ -239,7 +239,8 @@ def move_block(pub_cmd, loop_rate, start_loc, start_height, \
     time.sleep(1.0)
 
     if digital_in_0 != 1:
-        rospy.logerr('Failed to grip block')
+        rospy.logerr('Suction feedback error: No block detected at this location when one was expected')
+        gripper(pub_cmd, loop_rate, suction_off)
         return 2
 
     error = move_arm(pub_cmd, loop_rate, safety_src, 2.0, 2.0)    
@@ -266,7 +267,7 @@ def move_block(pub_cmd, loop_rate, start_loc, start_height, \
     time.sleep(1.0)
 
     if digital_in_0 != 0:
-        rospy.logerr('Failed to drop block')
+        rospy.logerr('Suction feedback error: Block still detected after release')
         return 3
 
     error = move_arm(pub_cmd, loop_rate, safety_des, 2.0, 2.0)
